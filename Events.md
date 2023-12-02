@@ -1,8 +1,15 @@
 ## Elixir.Wednesday #3 - Dec 6
 
-Location: _TBD_
+Location: Meeting room - Zumwhere Đông Du - 54 Đông Du, Q1 tp HCM
 
-Topics: _TBA_
+Topics:
+
+**Process monitoring & Supervisor in Elixir** - Manh Vu & Tam Ly
+1. Manually control process by link, monitor & trap exit.
+2. Supervisor & OTP for an easy life.
+3. Process in distributed world & how Elixir take advantage of Erlang to go further than other languages.
+
+**Testing in elixir** - Speaker: Lang Pham
 
 ## Elixir.Wednesday #2 - Nov 15
 
