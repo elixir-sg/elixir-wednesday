@@ -9,6 +9,8 @@ Topics:
 2. Supervisor & OTP for an easy life.
 3. Process in distributed world & how Elixir take advantage of Erlang to go further than other languages.
 
+Slide: [https://github.com/ohhi-vn/sharing_elixir_sg_elixir_dec_6](https://github.com/ohhi-vn/sharing_elixir_sg_elixir_dec_6)
+
 **Testing in elixir** - Speaker: Lang Pham
 
 ## Elixir.Wednesday #2 - Nov 15
