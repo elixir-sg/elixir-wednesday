@@ -1,0 +1,379 @@
+<!-- livebook:{"file_entries":[{"name":"elixir_crash_course_pattern_matching.png","type":"attachment"},{"name":"first_pattern_matching_code.png","type":"attachment"}]} -->
+
+# Elixir I love - My "pattern matching" journey
+
+## Why patterm matching?
+
+### The very first "pattern matching" (of me)
+
+Before actually using pattern matching, I didn't mind what is it. Every languages have switch/case, why somes are more fancy? or worse, sometimes I against it in discussion.
+
+```ruby
+# TODO: which operator used here?
+action = case state.action.char 
+  when "l"
+    "go left"
+  when "r"
+    "go right"
+  when "u"
+    "go up"
+  when "d"
+    "go down"
+  else
+    "stay"
+  end
+}
+
+do(action)
+```
+
+Typescript:
+
+```typescript
+// TODO: Which operator used here?
+switch(state.action.char) { 
+   case "l": { 
+      "go left"
+      break; 
+   }
+   case "r": { 
+      "go right"
+      break; 
+   }
+   case "u": { 
+      "go up"
+      break; 
+   }
+   case "d": { 
+      "go down"
+      break; 
+   }
+   default: { 
+      "stay";
+      break; 
+   } 
+} 
+```
+
+But switch-case pattern matchings stop here.
+
+## Realize the first "more" pattern matching
+
+Look back a year using elixir, I got my first usage of pattern matching:
+
+![](files/first_pattern_matching_code.png)
+
+## The elixir pattern matching
+
+But what's exactly "pattern matching" in elixir, how does it different from other? What's its advantage? After hitting the wall, couple times, I came back to the documentation.
+
+[https://hexdocs.pm/elixir/1.16/pattern-matching.html](https://hexdocs.pm/elixir/1.16/pattern-matching.html)
+
+[https://elixir-lang.org/crash-course.html#pattern-matching](https://elixir-lang.org/crash-course.html#pattern-matching)
+
+![](files/elixir_crash_course_pattern_matching.png)
+
+You may call it overloading, with a little difference. The function/method signatures are not *numbers of arguments*, it's the **pattern of arguments**.
+
+<!-- livebook:{"break_markdown":true} -->
+
+### The match operator `=`
+
+<!-- livebook:{"break_markdown":true} -->
+
+We don't have assignment operator, we have pattern matching instead.
+
+```elixir
+x = 1
+
+1 = x
+1 = 1
+x = x
+```
+
+```elixir
+2 = x
+```
+
+```elixir
+2 = y
+```
+
+### Matching the (a little bit more) complex
+
+```elixir
+message = {:hello, "world", 42}
+
+{a, b, c} = message
+IO.inspect(a, label: "a")
+IO.inspect(b, label: "b")
+IO.inspect(c, label: "c")
+
+{:hello, d, e} = message
+IO.inspect(d, label: "d")
+IO.inspect(e, label: "e")
+
+{:greeting, d, e} = message
+```
+
+```elixir
+list = [1, :two, "three"]
+[a, b, c] = list
+IO.inspect(a, label: "a")
+IO.inspect(b, label: "b")
+IO.inspect(c, label: "c")
+
+[d | e] = list
+IO.inspect(d, label: "d")
+IO.inspect(e, label: "e")
+
+[f, g] = list
+```
+
+```elixir
+struct = %{a: "a", b: :b, c: %{deeper_c: "three"}}
+%{a: a, b: b, c: %{deeper_c: c}} = struct
+IO.inspect(a, label: "a")
+IO.inspect(b, label: "b")
+IO.inspect(c, label: "c")
+```
+
+```elixir
+struct = %{a: "a", b: :b, c: %{deeper_c: "three"}}
+
+%{a: "a", b: :b, c: %{deeper_c: c}} = struct
+IO.inspect(c, label: "c")
+
+%{a: "c", b: :b, c: %{deeper_c: d}} = struct
+IO.inspect(d, label: "d")
+```
+
+### The pin operator `^`
+
+```elixir
+x = 1
+IO.inspect(x, label: "1")
+
+x = 2
+IO.inspect(x, label: "2")
+
+^x = 3
+IO.inspect(x, label: "3")
+```
+
+```elixir
+x = 1
+[^x, 2, 3] = [1, 2, 3]
+[^x, 2, 3] = [2, 2, 3]
+```
+
+```elixir
+x = 1
+{x, 2} = {1, 2}
+{^x, 2} = {3, 2}
+```
+
+```elixir
+[x, 2, x] = [1, 2, 1]
+[^x, 2, ^x] = [1, 2, 1]
+
+[1, y, y] = [1, 2, 1]
+```
+
+### `case` statement
+
+<!-- livebook:{"break_markdown":true} -->
+
+`=` used to match **value** against 1 **pattern**. 
+Use `case` to match **value** against **more patterns** to find one.
+
+The same to traditional `switch`/`case`, just different compare operator.
+
+```elixir
+case [1, 2, 1] do
+  [1, y, y] -> IO.inspect("same tail #{y}")
+  [x, 2, x] -> IO.inspect("same head-tail #{x}")
+  _ -> IO.inspect("no match")
+end
+```
+
+This is the most familiar form of pattern matching you will find in other languages. The improvement of `switch`/`case`.
+
+Rust:
+
+```rust
+    let number = 7;
+
+    match number {
+        0 => println!("It's zero"),
+        1 | 2 => println!("It's one or two"),
+        3..=9 => println!("It's between 3 and 9"),
+        _ => println!("It's something else"),
+    }
+```
+
+Julia
+
+```julia
+function check_number(number)
+    match number
+        0 => println("It's zero")
+        1, 2 => println("It's one or two")
+        3:9 => println("It's between 3 and 9")
+        _ => println("It's something else")
+    end
+end
+
+check_number(7)
+```
+
+```elixir
+defmodule Example do
+  def check_number(number) do
+    case number do
+      0 -> IO.puts("It's zero")
+      num when num in [1, 2] -> IO.puts("It's one or two")
+      num when num >= 3 and num <= 9 -> IO.puts("It's between 3 and 9")
+      _ -> IO.puts("It's something else")
+    end
+  end
+end
+
+Example.check_number(7)
+```
+
+## The "others" pattern matching
+
+### Pattern matching as assignment
+
+<!-- livebook:{"break_markdown":true} -->
+
+Variable assignment is a theorem, to most programming language. I was unable to think to a language without variable assignment. But elixir doesn't, it has binding in pattern matching instead. You may argue that **binding** is **assignment**, yes, but came after pattern matching.
+
+And it come with an interesting loose, parallel assignment, which I'm blocked from last project 🤣
+
+```elixir
+{:ok, %{response: response, status: status}} = {:ok, %{response: "response", status: 200}}
+IO.inspect(response, label: "response")
+IO.inspect(status, label: "status")
+```
+
+### Pattern matching as overloading
+
+<!-- livebook:{"break_markdown":true} -->
+
+From documentation, we know we could do patern matching with `=` operator, `case` (and its similars `if`, `cond`). But there is another method we could use to do pattern matching, which I think should put into official pattern matching documentation, it's function call.
+
+Pattern matching here allow us do function overloading more complex than other languages. This is a good improvement in writing code but also a good place to abuse. More and more complex overloading may lead to leaking logic, especially, with default matching `_`, leaking logic will silently comes to production.
+
+```elixir
+defmodule Over do
+  def foo({:ok, response}), do: "they responded ok with #{response}"
+  def foo({:error, message}), do: "they responded error message #{message}"
+  def foo(_), do: "I dont known, but seems not ok"
+end
+
+IO.inspect("Over.foo/1")
+Over.foo({:ok, "secret"}) |> IO.inspect()
+Over.foo({:panic, "Im hacking you"}) |> IO.inspect()
+```
+
+```elixir
+defmodule Over2 do
+  def eq?(x, x), do: true
+  def eq?(_, _), do: false
+end
+
+IO.inspect("Over.eq?/2")
+Over2.eq?(1, 1) |> IO.inspect()
+Over2.eq?(%{a: 1}, %{a: 1}) |> IO.inspect()
+Over2.eq?(%{a: 1, b: 2}, %{a: 1}) |> IO.inspect()
+```
+
+```elixir
+defmodule Over3 do
+  def currency_add({amount_a, currency}, {amount_b, currency}) do
+    {amount_a + amount_b, currency}
+  end
+
+  def currency_add({amount_a, "VND"}, {amount_b, "USD"}) do
+    {amount_a + amount_b * 23_000, "VND"}
+  end
+
+  def currency_add({amount_a, "USD"}, {amount_b, "VND"}) do
+    {amount_a + amount_b / 23_000, "USD"}
+  end
+end
+
+IO.inspect("Over.currency_add/2")
+Over3.currency_add({100_000, "VND"}, {100_000, "VND"}) |> IO.inspect()
+Over3.currency_add({100_000, "VND"}, {10, "USD"}) |> IO.inspect()
+Over3.currency_add({10, "USD"}, {100_000, "VND"}) |> IO.inspect()
+```
+
+### Pattern matching as destructuring
+
+```elixir
+list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+
+odd =
+  list
+  |> Enum.filter(fn item -> rem(item, 2) == 1 end)
+  |> Enum.count()
+
+even =
+  list
+  |> Enum.filter(fn item -> rem(item, 2) == 0 end)
+  |> Enum.count()
+
+list
+|> Enum.reduce({0, 0}, fn item, {odd, even} ->
+  case rem(item, 2) do
+    0 -> {odd, even + 1}
+    1 -> {odd + 1, even}
+  end
+end)
+|> IO.inspect()
+```
+
+### Replace `case` by function
+
+<!-- livebook:{"break_markdown":true} -->
+
+Come back with the case example, we could achieve it with function.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+case [1, 2, 1] do
+  [1, y, y] -> IO.inspect("same tail #{y}")
+  [x, 2, x] -> IO.inspect("same head-tail #{x}")
+  _ -> IO.inspect("no match")
+end
+```
+
+```elixir
+defmodule Compare do
+  def check([1, y, y]), do: IO.inspect("same tail #{y}")
+  def check([x, 2, x]), do: IO.inspect("same head-tail #{x}")
+  def check(_), do: IO.inspect("no match")
+end
+
+Compare.check([1, 2, 1])
+```
+
+## What's next?
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+defmodule Developer do
+  def practice(code) do
+    code
+    |> read()
+    |> write()
+    |> optimize()
+    |> practice()
+  end
+end
+```
