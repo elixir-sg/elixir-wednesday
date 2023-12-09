@@ -13,6 +13,8 @@ Slide: [https://github.com/ohhi-vn/sharing_elixir_sg_elixir_dec_6](https://githu
 
 **Testing in elixir** - Speaker: Lang Pham
 
+Demo: [https://github.com/LangPham/demo_testing_ex](https://github.com/LangPham/demo_testing_ex)
+
 ## Elixir.Wednesday #2 - Nov 15
 
 Location: Athena.Studio office
