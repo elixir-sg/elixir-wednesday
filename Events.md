@@ -4,7 +4,7 @@ Location: Raksul office - Tầng 34, Lim Tower, số 9-11 Tôn Đức Thắng, P
 
 Topics:
 
-**TBA**
+**Mnesia real-time distributed database on clustering Elixir** - Speaker: TamLy
 
 **My journey with elixir pattern matching** - Speaker: AV
 
