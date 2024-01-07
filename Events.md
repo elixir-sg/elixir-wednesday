@@ -2,11 +2,13 @@
 
 Location: Raksul office - Tầng 34, Lim Tower, số 9-11 Tôn Đức Thắng, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh, Việt Nam.
 
+[Introduction slide](https://docs.google.com/presentation/d/1i65Nt7qZ-UPGtYRDH23vwd9W3V9P1kby6J20iGlSuqE/edit?usp=sharing)
+
 Topics:
 
-**Mnesia real-time distributed database on clustering Elixir** - Speaker: TamLy
+[**Mnesia real-time distributed database on clustering Elixir** - Speaker: TamLy](https://github.com/ohhi-vn/Mnesia_phoenix)
 
-**My journey with elixir pattern matching** - Speaker: AV
+[**My journey with elixir pattern matching** - Speaker: AV](https://github.com/elixir-sg/elixir-wednesday/blob/main/assets/PatternMatching.livemd)
 
 
 ## Elixir.Wednesday #3 - Dec 6
