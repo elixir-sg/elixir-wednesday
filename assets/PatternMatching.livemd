@@ -248,7 +248,7 @@ Example.check_number(7)
 
 <!-- livebook:{"break_markdown":true} -->
 
-Variable assignment is a theorem, to most programming language. I was unable to think to a language without variable assignment. But elixir doesn't, it has binding in pattern matching instead. You may argue that **binding** is **assignment**, yes, but came after pattern matching.
+Variable assignment is a theorem, to most programming language. I was unable to think to a language without variable assignment. But elixir doesn't, it has binding in pattern matching instead. You may argue that **binding** is **assignment**, well, maybe they looked alike sometimes, but not. The distinction between variable binding vs. variable assignment is small, but critical when it comes to pattern matching in Elixir.
 
 And it come with an interesting loose, parallel assignment, which I'm blocked from last project 🤣
 
@@ -256,6 +256,38 @@ And it come with an interesting loose, parallel assignment, which I'm blocked fr
 {:ok, %{response: response, status: status}} = {:ok, %{response: "response", status: 200}}
 IO.inspect(response, label: "response")
 IO.inspect(status, label: "status")
+```
+
+* with assignment, you copy/move the value while the name (the memory location the name points to) stay the same.
+* with binding, you move the name (the memory location the name points to) while the value stays the same.
+
+[https://elixirforum.com/t/whats-the-difference-between-variable-binding-and-assignment/4971]
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Pattern matching as destructuring
+
+```elixir
+list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+
+odd =
+  list
+  |> Enum.filter(fn item -> rem(item, 2) == 1 end)
+  |> Enum.count()
+
+even =
+  list
+  |> Enum.filter(fn item -> rem(item, 2) == 0 end)
+  |> Enum.count()
+
+list
+|> Enum.reduce({0, 0}, fn item, {odd, even} ->
+  case rem(item, 2) do
+    0 -> {odd, even + 1}
+    1 -> {odd + 1, even}
+  end
+end)
+|> IO.inspect()
 ```
 
 ### Pattern matching as overloading
@@ -311,30 +343,64 @@ Over3.currency_add({100_000, "VND"}, {10, "USD"}) |> IO.inspect()
 Over3.currency_add({10, "USD"}, {100_000, "VND"}) |> IO.inspect()
 ```
 
-### Pattern matching as destructuring
+### Pattern matching in `with`
+
+With ruby
+
+```ruby
+  def setup_order_balance(order_id, total_amount, currency)
+    order_balance = OrderBalance.get_by(order_id: order_id)
+    return order_balance if order_balance
+      
+    order_balance = insert_order_balance(order_id, total_amount, currency)
+    return nil unless order_balance
+
+    order_balance_entry = create_order_balance_entry(order_balance, amount: total_amount, entry_type: :credit)
+    if order_balance_entry
+      order_balance
+    else
+      nil
+    end
+  end
+```
+
+First elixir version
+
+<!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
-
-odd =
-  list
-  |> Enum.filter(fn item -> rem(item, 2) == 1 end)
-  |> Enum.count()
-
-even =
-  list
-  |> Enum.filter(fn item -> rem(item, 2) == 0 end)
-  |> Enum.count()
-
-list
-|> Enum.reduce({0, 0}, fn item, {odd, even} ->
-  case rem(item, 2) do
-    0 -> {odd, even + 1}
-    1 -> {odd + 1, even}
+  defp setup_order_balance(order_id, total_amount, currency) do
+    case OrderBalance.get_by(order_id: order_id) do
+      nil ->
+        case insert_order_balance(order_id, total_amount, currency) do
+          {:ok, order_balance} ->
+            create_order_balance_entry(order_balance, %{amount: total_amount, entry_type: :credit})
+            {:ok, order_balance}
+          error -> error
+        end
+      order_balance -> {:ok, order_balance}
+    end
   end
-end)
-|> IO.inspect()
 ```
+
+Another version
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+  defp setup_order_balance(order_id, total_amount, currency) do
+    with {:order_balance_exist, nil} <- {:order_balance_exist, OrderBalance.get_by(order_id: order_id)},
+         {:ok, order_balance} <- insert_order_balance(order_id, total_amount, currency),
+         {:ok, _} <- create_order_balance_entry(order_balance, %{amount: total_amount, entry_type: :credit}) do
+      {:ok, order_balance}
+    else
+      {:order_balance_exist, order_balance} -> {:ok, order_balance}
+      error -> error
+    end
+  end
+```
+
+<!-- livebook:{"break_markdown":true} -->
 
 ### Replace `case` by function
 
