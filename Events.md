@@ -1,3 +1,14 @@
+## Elixir.Wednesday #4 - Jan 10
+
+Location: Raksul office - Tầng 34, Lim Tower, số 9-11 Tôn Đức Thắng, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh, Việt Nam.
+
+Topics:
+
+**Mnesia real-time distributed database on clustering Elixir** - Speaker: TamLy
+
+**My journey with elixir pattern matching** - Speaker: AV
+
+
 ## Elixir.Wednesday #3 - Dec 6
 
 Location: Meeting room - Zumwhere Đông Du - 54 Đông Du, Q1 tp HCM
@@ -12,6 +23,8 @@ Topics:
 Slide: [https://github.com/ohhi-vn/sharing_elixir_sg_elixir_dec_6](https://github.com/ohhi-vn/sharing_elixir_sg_elixir_dec_6)
 
 **Testing in elixir** - Speaker: Lang Pham
+
+Demo: [https://github.com/LangPham/demo_testing_ex](https://github.com/LangPham/demo_testing_ex)
 
 ## Elixir.Wednesday #2 - Nov 15
 
