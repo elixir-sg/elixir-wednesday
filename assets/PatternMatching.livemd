@@ -2,7 +2,7 @@
 
 # Elixir I love - My "pattern matching" journey
 
-## Why patterm matching?
+## What patterm matching?
 
 ### The very first "pattern matching" (of me)
 
@@ -92,7 +92,8 @@ x = x
 ```
 
 ```elixir
-2 = x
+# 2 = x
+x = 2
 ```
 
 ```elixir
@@ -127,11 +128,37 @@ IO.inspect(c, label: "c")
 IO.inspect(d, label: "d")
 IO.inspect(e, label: "e")
 
-[f, g] = list
+# [f, g] = list
+
+[f, g | h] = list
+IO.inspect(f, label: "f")
+IO.inspect(g, label: "g")
+IO.inspect(h, label: "h")
+
+[i, j, k | l] = list
+IO.inspect(i, label: "i")
+IO.inspect(j, label: "j")
+IO.inspect(k, label: "k")
+IO.inspect(l, label: "l")
 ```
 
 ```elixir
-struct = %{a: "a", b: :b, c: %{deeper_c: "three"}}
+struct = %{
+  a: "a",
+  b: :b,
+  c: %{deeper_c: "three"},
+  d: "dont care"
+}
+
+# a = struct.a
+# b = struct.b
+# c = struct.c.deeper_c
+
+# a = struct?.a
+# b = struct?.b
+# c = struct?.c?.deeper_c
+# if (a && b && c) { ... }
+
 %{a: a, b: b, c: %{deeper_c: c}} = struct
 IO.inspect(a, label: "a")
 IO.inspect(b, label: "b")
@@ -147,6 +174,10 @@ IO.inspect(c, label: "c")
 %{a: "c", b: :b, c: %{deeper_c: d}} = struct
 IO.inspect(d, label: "d")
 ```
+
+Thinking in some other languages, we must pull them all to variables `a`, `b`, `c`, `d`... then test out if `a` is equal to `"a"`, `b` is equal to `:b`, ...
+
+<!-- livebook:{"break_markdown":true} -->
 
 ### The pin operator `^`
 
@@ -164,20 +195,41 @@ IO.inspect(x, label: "3")
 ```elixir
 x = 1
 [^x, 2, 3] = [1, 2, 3]
+IO.inspect(x)
+[x, 2, 3] = [2, 2, 3]
+IO.inspect(x)
+
+x = 1
 [^x, 2, 3] = [2, 2, 3]
 ```
 
 ```elixir
 x = 1
 {x, 2} = {1, 2}
+{x, 2} = {3, 2}
+IO.inspect(x)
+
+x = 1
 {^x, 2} = {3, 2}
 ```
 
 ```elixir
 [x, 2, x] = [1, 2, 1]
+IO.inspect(x)
 [^x, 2, ^x] = [1, 2, 1]
+IO.inspect(x)
 
 [1, y, y] = [1, 2, 1]
+
+# Test if list has 3 same item
+[y, y, y] = [1, 1, 1]
+# Or 
+# list[0] == 1 && 
+#   list[0] == list[1] && 
+#   list[1] == list[2] && 
+#   length(list) == 3
+# It's a bit hard to comprehend but quite satisfy 
+#   after we learnt it
 ```
 
 ### `case` statement
@@ -231,10 +283,17 @@ check_number(7)
 defmodule Example do
   def check_number(number) do
     case number do
-      0 -> IO.puts("It's zero")
-      num when num in [1, 2] -> IO.puts("It's one or two")
-      num when num >= 3 and num <= 9 -> IO.puts("It's between 3 and 9")
-      _ -> IO.puts("It's something else")
+      0 ->
+        IO.puts("It's zero")
+
+      num when num in [1, 2] ->
+        IO.puts("It's one or two")
+
+      num when num >= 3 and num <= 9 ->
+        IO.puts("It's between 3 and 9")
+
+      _ ->
+        IO.puts("It's something else")
     end
   end
 end
@@ -248,12 +307,14 @@ Example.check_number(7)
 
 <!-- livebook:{"break_markdown":true} -->
 
-Variable assignment is a theorem, to most programming language. I was unable to think to a language without variable assignment. But elixir doesn't, it has binding in pattern matching instead. You may argue that **binding** is **assignment**, well, maybe they looked alike sometimes, but not. The distinction between variable binding vs. variable assignment is small, but critical when it comes to pattern matching in Elixir.
+Variable assignment is a theorem, to most programming language. I was never think about a language without variable assignment. But elixir doesn't, it has binding in pattern matching instead. You may argue that **binding** is **assignment**, well, maybe they looked alike sometimes, but not. The distinction between variable binding vs. variable assignment is small, but critical when it comes to pattern matching in Elixir.
 
 And it come with an interesting loose, parallel assignment, which I'm blocked from last project 🤣
 
 ```elixir
-{:ok, %{response: response, status: status}} = {:ok, %{response: "response", status: 200}}
+{:ok, %{response: response, status: status}} =
+  {:ok, %{response: "response", status: 200}}
+
 IO.inspect(response, label: "response")
 IO.inspect(status, label: "status")
 ```
@@ -300,9 +361,14 @@ Pattern matching here allow us do function overloading more complex than other l
 
 ```elixir
 defmodule Over do
-  def foo({:ok, response}), do: "they responded ok with #{response}"
-  def foo({:error, message}), do: "they responded error message #{message}"
-  def foo(_), do: "I dont known, but seems not ok"
+  def foo({:ok, response}),
+    do: "they responded ok with #{response}"
+
+  def foo({:error, message}),
+    do: "they responded error message #{message}"
+
+  def foo(_),
+    do: "I dont known, but seems not ok"
 end
 
 IO.inspect("Over.foo/1")
@@ -374,10 +440,15 @@ First elixir version
       nil ->
         case insert_order_balance(order_id, total_amount, currency) do
           {:ok, order_balance} ->
-            create_order_balance_entry(order_balance, %{amount: total_amount, entry_type: :credit})
+            create_order_balance_entry(
+              order_balance,
+              %{amount: total_amount, entry_type: :credit}
+            )
             {:ok, order_balance}
+
           error -> error
         end
+
       order_balance -> {:ok, order_balance}
     end
   end
@@ -389,13 +460,21 @@ Another version
 
 ```elixir
   defp setup_order_balance(order_id, total_amount, currency) do
-    with {:order_balance_exist, nil} <- {:order_balance_exist, OrderBalance.get_by(order_id: order_id)},
-         {:ok, order_balance} <- insert_order_balance(order_id, total_amount, currency),
-         {:ok, _} <- create_order_balance_entry(order_balance, %{amount: total_amount, entry_type: :credit}) do
+    with {:order_balance_exist, nil} <-
+      {:order_balance_exist, OrderBalance.get_by(order_id: order_id)},
+         {:ok, order_balance} <-
+           insert_order_balance(order_id, total_amount, currency),
+         {:ok, _} <-
+           create_order_balance_entry(
+             order_balance,
+             %{amount: total_amount, entry_type: :credit}
+          ) do
       {:ok, order_balance}
     else
-      {:order_balance_exist, order_balance} -> {:ok, order_balance}
-      error -> error
+      {:order_balance_exist, order_balance} ->
+        {:ok, order_balance}
+      error ->
+        error
     end
   end
 ```
