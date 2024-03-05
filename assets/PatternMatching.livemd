@@ -2,7 +2,7 @@
 
 # Elixir I love - My "pattern matching" journey
 
-## What patterm matching?
+## What is pattern matching?
 
 ### The very first "pattern matching" (of me)
 
@@ -189,6 +189,7 @@ x = 2
 IO.inspect(x, label: "2")
 
 ^x = 3
+2 = 3
 IO.inspect(x, label: "3")
 ```
 
@@ -490,6 +491,7 @@ Come back with the case example, we could achieve it with function.
 <!-- livebook:{"force_markdown":true} -->
 
 ```elixir
+y = 4
 case [1, 2, 1] do
   [1, y, y] -> IO.inspect("same tail #{y}")
   [x, 2, x] -> IO.inspect("same head-tail #{x}")
